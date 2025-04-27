@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct {
+    Node* frente;
+    Node* tras;
+} Fila;
+
+void enfileirar(Fila* f, int valor) {
+    Node* novo = (Node*)malloc(sizeof(Node));
+    novo->data = valor;
+    novo->next = NULL;
+    if (f->tras == NULL) {
+        f->frente = f->tras = novo;
+    } else {
+        f->tras->next = novo;
+        f->tras = novo;
+    }
+}
+
+int desenfileirar(Fila* f) {
+    if (f->frente == NULL) {
+        printf("Fila vazia!\n");
+        return -1;
+    }
+    Node* temp = f->frente;
+    int valor = temp->data;
+    f->frente = f->frente->next;
+    if (f->frente == NULL) {
+        f->tras = NULL;
+    }
+    free(temp);
+    return valor;
+}
+
+void imprimirFila(Fila f) {
+    Node* atual = f.frente;
+    while (atual != NULL) {
+        printf("%d -> ", atual->data);
+        atual = atual->next;
+    }
+    printf("NULL\n");
+}
+
+void liberarFila(Fila* f) {
+    Node* temp;
+    while (f->frente != NULL) {
+        temp = f->frente;
+        f->frente = f->frente->next;
+        free(temp);
+    }
+    f->tras = NULL;
+}
+
+int main() {
+    Fila fila = {NULL, NULL};
+
+    enfileirar(&fila, 10);
+    enfileirar(&fila, 20);
+    enfileirar(&fila, 30);
+
+    printf("Fila: ");
+    imprimirFila(fila);
+
+    printf("Elemento removido: %d\n", desenfileirar(&fila));
+    printf("Fila após desenfileirar: ");
+    imprimirFila(fila);
+
+    liberarFila(&fila);
+
+    return 0;
+}
