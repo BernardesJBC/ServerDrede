@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+void push(Node** top, int valor) {
+    Node* novo = (Node*)malloc(sizeof(Node));
+    novo->data = valor;
+    novo->next = *top;
+    *top = novo;
+}
+
+int pop(Node** top) {
+    if (*top == NULL) {
+        printf("Pilha vazia!\n");
+        return -1;
+    }
+    Node* temp = *top;
+    int valor = temp->data;
+    *top = (*top)->next;
+    free(temp);
+    return valor;
+}
+
+void imprimirPilha(Node* top) {
+    Node* atual = top;
+    while (atual != NULL) {
+        printf("%d\n", atual->data);
+        atual = atual->next;
+    }
+}
+
+void liberarPilha(Node* top) {
+    Node* temp;
+    while (top != NULL) {
+        temp = top;
+        top = top->next;
+        free(temp);
+    }
+}
+
+int main() {
+    Node* pilha = NULL;
+
+    push(&pilha, 10);
+    push(&pilha, 20);
+    push(&pilha, 30);
+
+    printf("Pilha:\n");
+    imprimirPilha(pilha);
+
+    printf("Elemento removido: %d\n", pop(&pilha));
+    printf("Pilha após pop:\n");
+    imprimirPilha(pilha);
+
+    liberarPilha(pilha);
+
+    return 0;
+}
