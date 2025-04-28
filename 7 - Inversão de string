@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <string.h>
+
+void inverterString(char *str, int inicio, int fim) {
+    if (inicio >= fim) {
+        return; // Caso base: quando os índices se encontram ou se cruzam
+    }
+    
+    // Troca os caracteres
+    char temp = str[inicio];
+    str[inicio] = str[fim];
+    str[fim] = temp;
+    
+    // Chamada recursiva para a próxima posição
+    inverterString(str, inicio + 1, fim - 1);
+}
+
+int main() {
+    char texto[100];
+    
+    printf("Digite uma string: ");
+    fgets(texto, sizeof(texto), stdin);
+    
+    // Remove o '\n' do final (caso fgets leia a quebra de linha)
+    size_t len = strlen(texto);
+    if (len > 0 && texto[len - 1] == '\n') {
+        texto[len - 1] = '\0';
+    }
+
+    inverterString(texto, 0, strlen(texto) - 1);
+
+    printf("String invertida: %s\n", texto);
+
+    return 0;
+}
