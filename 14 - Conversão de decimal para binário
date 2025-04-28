@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+void converterBinario(int n) {
+    if (n > 1) {
+        converterBinario(n / 2);  // Chamada recursiva para dividir por 2
+    }
+    printf("%d", n % 2);  // Imprime o bit (resto da divisão por 2)
+}
+
+int main() {
+    int numero;
+    
+    printf("Digite um número decimal: ");
+    scanf("%d", &numero);
+    
+    if (numero == 0) {
+        printf("0");  // Caso especial para 0
+    } else {
+        printf("Representação binária de %d é: ", numero);
+        converterBinario(numero);  // Chama a função recursiva
+    }
+    
+    printf("\n");
+    return 0;
+}
