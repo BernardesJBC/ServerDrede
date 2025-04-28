@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+void contagemRegressiva(int n) {
+    if (n < 0) {
+        return; // Caso base: terminou a contagem
+    }
+    
+    printf("%d ", n); // Imprime o número atual
+    contagemRegressiva(n - 1); // Chamada recursiva com n - 1
+}
+
+int main() {
+    int numero;
+    printf("Digite um número para iniciar a contagem regressiva: ");
+    scanf("%d", &numero);
+
+    if (numero < 0) {
+        printf("Número inválido! Digite um número não-negativo.\n");
+    } else {
+        contagemRegressiva(numero);
+        printf("\n"); // Quebra de linha após a contagem
+    }
+
+    return 0;
+}
