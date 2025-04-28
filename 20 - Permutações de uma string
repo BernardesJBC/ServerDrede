@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+
+// Função para trocar dois caracteres
+void trocar(char* a, char* b) {
+    char temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Função recursiva para gerar e imprimir as permutações
+void gerarPermutacoes(char* str, int inicio, int fim) {
+    if (inicio == fim) {
+        printf("%s, ", str);  // Imprime a permutação
+    } else {
+        for (int i = inicio; i <= fim; i++) {
+            trocar((str + inicio), (str + i));  // Troca o caractere de 'inicio' com 'i'
+            gerarPermutacoes(str, inicio + 1, fim); // Chamada recursiva
+            trocar((str + inicio), (str + i));  // Volta à configuração anterior (backtracking)
+        }
+    }
+}
+
+int main() {
+    char str[] = "abc";
+    int n = strlen(str);
+    
+    printf("Permutações de %s: \n", str);
+    gerarPermutacoes(str, 0, n - 1);
+    
+    return 0;
+}
