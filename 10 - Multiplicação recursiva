@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int multiplicar(int a, int b) {
+    if (b == 0) {
+        return 0; // Caso base: qualquer número multiplicado por 0 é 0
+    } else {
+        return a + multiplicar(a, b - 1); // Soma a 'a' 'b' vezes
+    }
+}
+
+int main() {
+    int a, b;
+    printf("Digite dois números inteiros não negativos: ");
+    scanf("%d %d", &a, &b);
+
+    if (a < 0 || b < 0) {
+        printf("Erro: apenas números não negativos permitidos.\n");
+    } else {
+        printf("%d multiplicado por %d é %d\n", a, b, multiplicar(a, b));
+    }
+
+    return 0;
+}
