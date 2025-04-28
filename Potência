@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+int potencia(int x, int n) {
+    if (n == 0) {
+        return 1; // Qualquer número elevado a 0 é 1
+    } else {
+        return x * potencia(x, n - 1); // Chamada recursiva
+    }
+}
+
+int main() {
+    int x, n;
+    printf("Digite a base (x): ");
+    scanf("%d", &x);
+    printf("Digite o expoente (n): ");
+    scanf("%d", &n);
+
+    if (n < 0) {
+        printf("Expoente inválido! Digite um valor não-negativo.\n");
+    } else {
+        printf("%d elevado a %d é %d\n", x, n, potencia(x, n));
+    }
+
+    return 0;
+}
