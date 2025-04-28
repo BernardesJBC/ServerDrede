@@ -1,0 +1,19 @@
+#include <stdio.h>
+
+int somaArray(int arr[], int n) {
+    if (n == 0) {
+        return 0; // Caso base: a soma de um array vazio é 0
+    } else {
+        return arr[n - 1] + somaArray(arr, n - 1); // Soma o último elemento e chama recursivamente
+    }
+}
+
+int main() {
+    int array[] = {1, 2, 3, 4};
+    int tamanho = sizeof(array) / sizeof(array[0]); // Calcula o número de elementos no array
+    
+    int resultado = somaArray(array, tamanho);
+    printf("A soma dos elementos do array é %d\n", resultado);
+    
+    return 0;
+}
