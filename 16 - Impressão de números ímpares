@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+void imprimirImpares(int n) {
+    if (n < 1) {
+        return; // Caso base: se n for menor que 1, não há números ímpares a imprimir
+    }
+
+    imprimirImpares(n - 2); // Chamada recursiva para o próximo número ímpar
+    
+    if (n % 2 != 0) { // Verifica se o número é ímpar
+        printf("%d ", n); // Imprime o número ímpar
+    }
+}
+
+int main() {
+    int numero;
+
+    printf("Digite um número inteiro: ");
+    scanf("%d", &numero);
+
+    printf("Números ímpares de 1 até %d: ", numero);
+    imprimirImpares(numero);
+
+    printf("\n");
+    return 0;
+}
