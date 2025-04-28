@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int procurarElemento(int arr[], int tamanho, int elemento) {
+    if (tamanho == 0) {
+        return 0; // Caso base: se o tamanho do array for 0, o elemento não foi encontrado
+    }
+    
+    if (arr[tamanho - 1] == elemento) {
+        return 1; // Se o elemento for encontrado, retorna 1 (true)
+    }
+
+    return procurarElemento(arr, tamanho - 1, elemento); // Chamada recursiva para o próximo elemento
+}
+
+int main() {
+    int array[] = {2, 4, 6, 8};
+    int tamanho = sizeof(array) / sizeof(array[0]);
+    int elemento;
+
+    printf("Digite o elemento a ser procurado: ");
+    scanf("%d", &elemento);
+
+    if (procurarElemento(array, tamanho, elemento)) {
+        printf("Elemento %d encontrado no array.\n", elemento);
+    } else {
+        printf("Elemento %d não encontrado no array.\n", elemento);
+    }
+
+    return 0;
+}
