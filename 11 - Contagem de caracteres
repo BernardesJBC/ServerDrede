@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+int contarCaractere(const char *str, char c) {
+    if (*str == '\0') {
+        return 0; // Caso base: fim da string
+    } else {
+        // Se o caractere atual for igual a 'c', conta 1 e chama recursão para o próximo caractere
+        return (*str == c) + contarCaractere(str + 1, c);
+    }
+}
+
+int main() {
+    char texto[100];
+    char caractere;
+    
+    printf("Digite uma string: ");
+    fgets(texto, sizeof(texto), stdin);
+    
+    // Remove o '\n' do final (se houver)
+    size_t len = strlen(texto);
+    if (len > 0 && texto[len - 1] == '\n') {
+        texto[len - 1] = '\0';
+    }
+
+    printf("Digite o caractere a ser contado: ");
+    scanf("%c", &caractere);
+
+    int resultado = contarCaractere(texto, caractere);
+    printf("O caractere '%c' aparece %d vez(es) na string.\n", caractere, resultado);
+    
+    return 0;
+}
