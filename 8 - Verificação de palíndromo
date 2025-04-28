@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <string.h>
+
+int ehPalindromo(const char *str, int inicio, int fim) {
+    if (inicio >= fim) {
+        return 1; // Caso base: todos os caracteres conferem
+    }
+    
+    if (str[inicio] != str[fim]) {
+        return 0; // Caracteres diferentes -> não é palíndromo
+    }
+    
+    // Verifica a substring interna
+    return ehPalindromo(str, inicio + 1, fim - 1);
+}
+
+int main() {
+    char texto[100];
+    
+    printf("Digite uma palavra: ");
+    fgets(texto, sizeof(texto), stdin);
+    
+    // Remove o '\n' do final (se houver)
+    size_t len = strlen(texto);
+    if (len > 0 && texto[len - 1] == '\n') {
+        texto[len - 1] = '\0';
+        len--;
+    }
+
+    if (ehPalindromo(texto, 0, len - 1)) {
+        printf("É um palíndromo!\n");
+    } else {
+        printf("Não é um palíndromo.\n");
+    }
+
+    return 0;
+}
