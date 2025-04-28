@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+int fibonacci(int n) {
+    if (n == 0) {
+        return 0; // Caso base: Fibonacci(0) = 0
+    } else if (n == 1) {
+        return 1; // Caso base: Fibonacci(1) = 1
+    } else {
+        return fibonacci(n - 1) + fibonacci(n - 2); // Passo recursivo
+    }
+}
+
+int main() {
+    int numero;
+    printf("Digite a posição n para encontrar o n-ésimo termo da sequência de Fibonacci: ");
+    scanf("%d", &numero);
+
+    if (numero < 0) {
+        printf("Número inválido! Digite um número não-negativo.\n");
+    } else {
+        printf("O %dº termo da sequência de Fibonacci é %d\n", numero, fibonacci(numero));
+    }
+
+    return 0;
+}
