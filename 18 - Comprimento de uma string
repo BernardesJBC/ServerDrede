@@ -1,0 +1,17 @@
+#include <stdio.h>
+
+int comprimentoString(const char* str) {
+    if (*str == '\0') {
+        return 0; // Caso base: se o caractere for '\0', a string terminou
+    }
+    return 1 + comprimentoString(str + 1); // Chama recursivamente a função para o próximo caractere
+}
+
+int main() {
+    char str[] = "recursivo";
+
+    int comprimento = comprimentoString(str);
+    printf("O comprimento da string \"%s\" é: %d\n", str, comprimento);
+
+    return 0;
+}
