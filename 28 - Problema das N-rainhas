@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 20  // Tamanho máximo permitido para o tabuleiro
+
+int tabuleiro[MAX]; // tabuleiro[i] = coluna da rainha na linha i
+
+// Verifica se é seguro colocar uma rainha na linha 'linha' e coluna 'coluna'
+int seguro(int linha, int coluna) {
+    for (int i = 0; i < linha; i++) {
+        if (tabuleiro[i] == coluna || // Mesma coluna
+            abs(tabuleiro[i] - coluna) == abs(i - linha)) // Mesma diagonal
+            return 0;
+    }
+    return 1;
+}
+
+// Imprime o tabuleiro
+void imprimirTabuleiro(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (tabuleiro[i] == j)
+                printf("Q ");
+            else
+                printf(". ");
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+// Função recursiva para resolver o problema das N-rainhas
+void resolverNQueens(int linha, int n) {
+    if (linha == n) {
+        imprimirTabuleiro(n);
+        return;
+    }
+
+    for (int coluna = 0; coluna < n; coluna++) {
+        if (seguro(linha, coluna)) {
+            tabuleiro[linha] = coluna;
+            resolverNQueens(linha + 1, n); // Próxima linha
+        }
+    }
+}
+
+// Função principal
+int main() {
+    int n = 4; // Você pode alterar o valor de n para testar outros casos
+    printf("Soluções para o problema das %d-rainhas:\n\n", n);
+    resolverNQueens(0, n);
+    return 0;
+}
