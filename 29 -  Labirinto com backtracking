@@ -1,0 +1,71 @@
+#include <stdio.h>
+
+#define MAX 100
+
+int n = 3, m = 4; // Tamanho do labirinto
+int labirinto[MAX][MAX] = {
+    {0, 1, 0, 0},
+    {0, 0, 0, 1},
+    {1, 0, 1, 0}
+};
+
+char caminho[MAX][MAX]; // Matriz para marcar o caminho com '*'
+
+// Verifica se a célula (x, y) é válida para mover
+int valido(int x, int y) {
+    return (x >= 0 && x < n && y >= 0 && y < m && labirinto[x][y] == 0 && caminho[x][y] != '*');
+}
+
+// Função recursiva para encontrar o caminho
+int resolverLabirinto(int x, int y) {
+    if (x == n - 1 && y == m - 1 && labirinto[x][y] == 0) {
+        caminho[x][y] = '*';
+        return 1;
+    }
+
+    if (valido(x, y)) {
+        caminho[x][y] = '*';
+
+        // Movimentos: baixo, direita, cima, esquerda
+        if (resolverLabirinto(x + 1, y)) return 1;
+        if (resolverLabirinto(x, y + 1)) return 1;
+        if (resolverLabirinto(x - 1, y)) return 1;
+        if (resolverLabirinto(x, y - 1)) return 1;
+
+        // Backtrack
+        caminho[x][y] = ' ';
+    }
+
+    return 0;
+}
+
+// Função para imprimir o labirinto com o caminho
+void imprimirCaminho() {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (labirinto[i][j] == 1)
+                printf("1 ");
+            else if (caminho[i][j] == '*')
+                printf("* ");
+            else
+                printf("0 ");
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    // Inicializa a matriz de caminho
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            caminho[i][j] = ' ';
+
+    if (resolverLabirinto(0, 0)) {
+        printf("Caminho encontrado:\n");
+        imprimirCaminho();
+    } else {
+        printf("Nenhum caminho encontrado.\n");
+    }
+
+    return 0;
+}
