@@ -1,0 +1,14 @@
+int main() {
+    int x1 = 0, y1 = 0;
+    int x2 = 2, y2 = 2;
+
+    int caminho[MAX][2]; // Armazena os passos do caminho
+
+    printf("Todos os caminhos possíveis de (%d,%d) até (%d,%d):\n", x1, y1, x2, y2);
+    imprimirCaminhos(x1, y1, x2, y2, caminho, 0);
+
+    int total = contarCaminhos(x1, y1, x2, y2);
+    printf("\nNúmero total de caminhos possíveis: %d\n", total);
+
+    return 0;
+}
