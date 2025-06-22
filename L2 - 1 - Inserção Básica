@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definição da estrutura do nó da lista
+typedef struct No {
+    int valor;
+    struct No* prox;
+} No;
+
+// Função para inserir no início da lista
+void inserir_inicio(No** lista, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (novo == NULL) {
+        printf("Erro de alocação de memória!\n");
+        return;
+    }
+    novo->valor = valor;
+    novo->prox = *lista;
+    *lista = novo;
+}
+
+// Função para inserir no fim da lista
+void inserir_fim(No** lista, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (novo == NULL) {
+        printf("Erro de alocação de memória!\n");
+        return;
+    }
+    novo->valor = valor;
+    novo->prox = NULL;
+if (*lista == NULL) {
+        *lista = novo;
+    } else {
+        No* atual = *lista;
+        while (atual->prox != NULL) {
+            atual = atual->prox;
+        }
+        atual->prox = novo;
+    }
+}
+
+// Função para imprimir a lista
+void imprimir_lista(No* lista) {
+    No* atual = lista;
+    while (atual != NULL) {
+        printf("%d -> ", atual->valor);
+        atual = atual->prox;
+    }
+    printf("NULL\n");
+}
+
+// Função principal para exemplo de uso
+int main() {
+    No* lista = NULL;
+
+inserir_fim(&lista, 10);
+    inserir_inicio(&lista, 5);
+    inserir_fim(&lista, 15);
+    inserir_inicio(&lista, 2);
+
+     printf("Lista encadeada: ");
+    imprimir_lista(lista);
+
+
+    return 0;
+
+
+}
+
+    
