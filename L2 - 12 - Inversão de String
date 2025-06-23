@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Nó da pilha
+typedef struct No {
+    char caractere;
+    struct No* prox;
+} No;
+
+// Pilha com topo
+typedef struct {
+    No* topo;
+} Pilha;
+
+// Inicializa a pilha
+void inicializar(Pilha* p) {
+    p->topo = NULL;
+}
+
+// Verifica se está vazia
+int esta_vazia(Pilha* p) {
+    return p->topo == NULL;
+}
+
+// Empilha um caractere
+int empilhar(Pilha* p, char c) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (!novo) return 0;
+    novo->caractere = c;
+    novo->prox = p->topo;
+    p->topo = novo;
+    return 1;
+}
+
+// Desempilha um caractere
+int desempilhar(Pilha* p, char* c) {
+    if (esta_vazia(p)) return 0;
+    No* temp = p->topo;
+    *c = temp->caractere;
+    p->topo = temp->prox;
+    free(temp);
+    return 1;
+}
+
+// Libera a pilha
+void liberar_pilha(Pilha* p) {
+    char c;
+    while (desempilhar(p, &c));
+}
+
+// Inverte a string usando pilha
+void inverter_string(char* str) {
+    Pilha p;
+    inicializar(&p);
+
+    // Empilha todos os caracteres
+    for (int i = 0; str[i] != '\0'; i++) {
+        empilhar(&p, str[i]);
+    }
+
+    // Desempilha e substitui na string original
+    for (int i = 0; str[i] != '\0'; i++) {
+        desempilhar(&p, &str[i]);
+    }
+
+    liberar_pilha(&p);
+}
