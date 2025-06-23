@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Nó da fila (para strings)
+typedef struct No {
+    char* dado;
+    struct No* prox;
+} No;
+
+// Fila dinâmica para strings
+typedef struct {
+    No* inicio;
+    No* fim;
+} Fila;
+
+// Inicializa a fila
+void inicializar(Fila* f) {
+    f->inicio = NULL;
+    f->fim = NULL;
+}
+
+// Enfileira uma string (duplica a string)
+int enfileirar(Fila* f, const char* str) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (!novo) return 0;
+    novo->dado = strdup(str);  // duplica a string
+    if (!novo->dado) {
+        free(novo);
+        return 0;
+    }
+    novo->prox = NULL;
+
+    if (f->fim == NULL) { // fila vazia
+        f->inicio = novo;
+        f->fim = novo;
+    } else {
+        f->fim->prox = novo;
+        f->fim = novo;
+    }
+    return 1;
+}
+
+// Desenfileira a string do início
+int desenfileirar(Fila* f, char** str) {
+    if (f->inicio == NULL) return 0;
+
+    No* temp = f->inicio;
+    *str = temp->dado;
+    f->inicio = temp->prox;
+    if (f->inicio == NULL) f->fim = NULL;
+    free(temp);
+    return 1;
+}
+
+// Libera toda a fila e strings restantes
+void liberar_fila(Fila* f) {
+    char* str;
+    while (desenfileirar(f, &str)) {
+        free(str);
+    }
+}
+
+// Função para gerar primeiros N números binários usando fila
+char** gerar_binarios(int N) {
+    if (N <= 0) return NULL;
+
+    char** resultado = (char**)malloc(N * sizeof(char*));
+    if (!resultado) return NULL;
+
+    Fila fila;
+    inicializar(&fila);
+
+    enfileirar(&fila, "1");
+
+    for (int i = 0; i < N; i++) {
+        char* atual;
+        desenfileirar(&fila, &atual);
+
+        resultado[i] = atual; // salva a string atual no resultado
+
+        // cria novas strings para enfileirar
+        int len = strlen(atual);
+        char* s0 = (char*)malloc(len + 2); // +1 para '0' e +1 para '\0'
+        char* s1 = (char*)malloc(len + 2);
+
+        strcpy(s0, atual);
+        strcat(s0, "0");
+
+        strcpy(s1, atual);
+        strcat(s1, "1");
+
+        enfileirar(&fila, s0);
+        enfileirar(&fila, s1);
+
+        free(s0);
+        free(s1);
+    }
+
+    liberar_fila(&fila);
+    return resultado;
+}
+
+int main() {
+    int N = 5;
+    char** binarios = gerar_binarios(N);
+
+    printf("Primeiros %d numeros binarios:\n", N);
+    for (int i = 0; i < N; i++) {
+        printf("%s\n", binarios[i]);
+        free(binarios[i]);
+    }
+    free(binarios);
+
+    return 0;
+}
