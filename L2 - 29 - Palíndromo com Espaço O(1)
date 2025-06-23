@@ -1,0 +1,120 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Função para inserir no fim
+void inserir_fim(No** inicio, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = NULL;
+
+    if (*inicio == NULL) {
+        *inicio = novo;
+        return;
+    }
+
+    No* atual = *inicio;
+    while (atual->prox != NULL)
+        atual = atual->prox;
+    atual->prox = novo;
+}
+
+// Função para inverter a lista a partir de um nó
+No* inverter(No* cabeca) {
+    No* anterior = NULL;
+    No* atual = cabeca;
+    No* prox = NULL;
+
+    while (atual != NULL) {
+        prox = atual->prox;
+        atual->prox = anterior;
+        anterior = atual;
+        atual = prox;
+    }
+
+    return anterior; // novo início
+}
+
+// Função para comparar duas listas
+int comparar_listas(No* l1, No* l2) {
+    while (l1 && l2) {
+        if (l1->dado != l2->dado)
+            return 0;
+        l1 = l1->prox;
+        l2 = l2->prox;
+    }
+    return 1;
+}
+
+// Verifica se é palíndromo (sem estrutura auxiliar)
+int eh_palindromo(No* inicio) {
+    if (!inicio || !inicio->prox)
+        return 1;
+
+    // Etapa 1: encontrar o meio com ponteiros rápido/lento
+    No *lento = inicio, *rapido = inicio;
+    while (rapido->prox && rapido->prox->prox) {
+        lento = lento->prox;
+        rapido = rapido->prox->prox;
+    }
+
+    // Etapa 2: inverter segunda metade da lista
+    No* segunda_metade = inverter(lento->prox);
+
+    // Etapa 3: comparar primeira metade com a segunda metade invertida
+    int resultado = comparar_listas(inicio, segunda_metade);
+
+    // Etapa 4: restaurar a lista original (inverter de novo)
+    lento->prox = inverter(segunda_metade);
+
+    return resultado;
+}
+
+// Função para imprimir lista
+void imprimir_lista(No* inicio) {
+    while (inicio) {
+        printf("%d ", inicio->dado);
+        inicio = inicio->prox;
+    }
+    printf("\n");
+}
+
+// Libera memória
+void liberar_lista(No* inicio) {
+    No* temp;
+    while (inicio) {
+        temp = inicio;
+        inicio = inicio->prox;
+        free(temp);
+    }
+}
+
+// Teste
+int main() {
+    No* lista = NULL;
+
+    // Lista palíndroma: 1 → 2 → 3 → 2 → 1
+    inserir_fim(&lista, 1);
+    inserir_fim(&lista, 2);
+    inserir_fim(&lista, 3);
+    inserir_fim(&lista, 2);
+    inserir_fim(&lista, 1);
+
+    printf("Lista: ");
+    imprimir_lista(lista);
+
+    if (eh_palindromo(lista))
+        printf("É palíndromo\n");
+    else
+        printf("Não é palíndromo\n");
+
+    printf("Lista restaurada: ");
+    imprimir_lista(lista);
+
+    liberar_lista(lista);
+    return 0;
+}
