@@ -1,0 +1,73 @@
+#include <stdio.h>
+
+#define MAX 1000
+
+// Estrutura da pilha
+typedef struct {
+    int dados[MAX];
+    int topo;
+} Pilha;
+
+void inicializar(Pilha* p) {
+    p->topo = -1;
+}
+
+int esta_vazia(Pilha* p) {
+    return p->topo == -1;
+}
+
+int push(Pilha* p, int valor) {
+    if (p->topo == MAX - 1) return 0;
+    p->dados[++(p->topo)] = valor;
+    return 1;
+}
+
+int pop(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    *valor = p->dados[(p->topo)--];
+    return 1;
+}
+
+int topo(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    *valor = p->dados[p->topo];
+    return 1;
+}
+
+// Função principal: calcula água retida
+int calcular_agua(int* altura, int n) {
+    Pilha pilha;
+    inicializar(&pilha);
+
+    int agua = 0, i = 0;
+
+    while (i < n) {
+        int topo_pilha;
+        // Enquanto a pilha não estiver vazia e a altura atual for maior
+        while (!esta_vazia(&pilha) && altura[i] > altura[pilha.dados[pilha.topo]]) {
+            pop(&pilha, &topo_pilha);
+            if (esta_vazia(&pilha)) break;
+
+            int distancia = i - pilha.dados[pilha.topo] - 1;
+            int altura_min = (altura[i] < altura[pilha.dados[pilha.topo]] ? altura[i] : altura[pilha.dados[pilha.topo]]);
+            int altura_buraco = altura_min - altura[topo_pilha];
+
+            agua += distancia * altura_buraco;
+        }
+        push(&pilha, i);
+        i++;
+    }
+
+    return agua;
+}
+
+// Teste
+int main() {
+    int altura[] = {0,1,0,2,1,0,1,3,2,1,2,1};
+    int n = sizeof(altura) / sizeof(altura[0]);
+
+    int agua = calcular_agua(altura, n);
+    printf("Água retida: %d\n", agua); // Esperado: 6
+
+    return 0;
+}
