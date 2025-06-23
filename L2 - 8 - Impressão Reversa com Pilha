@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Estrutura do nó da lista
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Função para inserir no início da lista
+void inserir_inicio(No** lista, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = *lista;
+    *lista = novo;
+}
+
+// Função para imprimir a lista em ordem reversa usando pilha
+void imprimir_reverso(No* lista) {
+    // Primeiro, contamos quantos nós existem para alocar a pilha
+    int tamanho = 0;
+    No* atual = lista;
+    while (atual != NULL) {
+        tamanho++;
+        atual = atual->prox;
+    }
+
+    // Aloca uma pilha de ponteiros para os nós
+    No** pilha = (No**)malloc(tamanho * sizeof(No*));
+    int topo = -1;
+
+    // Empilha os nós
+    atual = lista;
+    while (actual != NULL) {
+        pilha[++topo] = atual;
+        atual = atual->prox;
+    }
+
+    // Desempilha e imprime os dados
+    while (topo >= 0) {
+        printf("%d -> ", pilha[topo--]->dado);
+    }
+    printf("NULL\n");
+
+    free(pilha); // Libera memória da pilha
+}
+
+int main() {
+    No* lista = NULL;
+
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30); // Lista: 30 -> 20 -> 10
+
+    printf("Impressão reversa com pilha:\n");
+    imprimir_reverso(lista);    // Deve imprimir: 10 -> 20 -> 30 -> NULL
+
+    return 0;
+}
