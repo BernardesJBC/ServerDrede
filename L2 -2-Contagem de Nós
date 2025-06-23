@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Estrutura de um nó da lista
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Função para contar os nós da lista
+int contar_nos(No* lista) {
+    int contador = 0;
+    while (lista != NULL) {
+        contador++;
+        lista = lista->prox;
+    }
+    return contador;
+}
