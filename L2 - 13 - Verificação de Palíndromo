@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+// Nó da pilha
+typedef struct No {
+    char c;
+    struct No* prox;
+} No;
+
+// Estrutura da pilha
+typedef struct {
+    No* topo;
+} Pilha;
+
+void inicializar(Pilha* p) {
+    p->topo = NULL;
+}
+
+int esta_vazia(Pilha* p) {
+    return p->topo == NULL;
+}
+
+int empilhar(Pilha* p, char c) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (!novo) return 0;
+    novo->c = c;
+    novo->prox = p->topo;
+    p->topo = novo;
+    return 1;
+}
+
+int desempilhar(Pilha* p, char* c) {
+    if (esta_vazia(p)) return 0;
+    No* temp = p->topo;
+    *c = temp->c;
+    p->topo = temp->prox;
+    free(temp);
+    return 1;
+}
+
+void liberar_pilha(Pilha* p) {
+    char lixo;
+    while (desempilhar(p, &lixo));
+}
+
+// Função para verificar se uma string é palíndromo usando pilha
+int eh_palindromo(const char* str) {
+    int len = strlen(str);
+    Pilha p;
+    inicializar(&p);
+
+    // Empilha a primeira metade da string
+    for (int i = 0; i < len / 2; i++) {
+        empilhar(&p, str[i]);
+    }
+
+    // Se o comprimento for ímpar, pula o caractere do meio
+    int inicio_segunda_metade = (len % 2 == 0) ? len / 2 : (len / 2) + 1;
+
+    // Compara a segunda metade com o que está na pilha
+    for (int i = inicio_segunda_metade; i < len; i++) {
+        char c;
+        if (!desempilhar(&p, &c) || c != str[i]) {
+            liberar_pilha(&p);
+            return 0;
+        }
+    }
+
+    liberar_pilha(&p);
+    return 1;
+}
