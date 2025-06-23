@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Insere valor na lista ordenada
+void inserir_ordenado(No** inicio, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = NULL;
+
+    if (*inicio == NULL || (*inicio)->dado >= valor) {
+        novo->prox = *inicio;
+        *inicio = novo;
+        return;
+    }
+
+    No* atual = *inicio;
+    while (atual->prox != NULL && atual->prox->dado < valor) {
+        atual = atual->prox;
+    }
+
+    novo->prox = atual->prox;
+    atual->prox = novo;
+}
+
+// Une duas listas ordenadas em uma única lista ordenada
+No* unir_listas_ordenadas(No* l1, No* l2) {
+    No dummy;
+    No* atual = &dummy;
+    dummy.prox = NULL;
+
+    while (l1 != NULL && l2 != NULL) {
+        if (l1->dado <= l2->dado) {
+            atual->prox = l1;
+            l1 = l1->prox;
+        } else {
+            atual->prox = l2;
+            l2 = l2->prox;
+        }
+        atual = atual->prox;
+    }
+
+    if (l1 != NULL) {
+        atual->prox = l1;
+    } else {
+        atual->prox = l2;
+    }
+
+    return dummy.prox;
+}
+
+// Imprime a lista
+void imprimir_lista(No* inicio) {
+    No* atual = inicio;
+    while (atual != NULL) {
+        printf("%d ", atual->dado);
+        atual = atual->prox;
+    }
+    printf("\n");
+}
+
+// Libera memória da lista
+void liberar_lista(No* inicio) {
+    No* temp;
+    while (inicio != NULL) {
+        temp = inicio;
+        inicio = inicio->prox;
+        free(temp);
+    }
+}
+
+int main() {
+    No* lista1 = NULL;
+    No* lista2 = NULL;
+
+    // Insere elementos ordenados em lista1
+    inserir_ordenado(&lista1, 1);
+    inserir_ordenado(&lista1, 3);
+    inserir_ordenado(&lista1, 5);
+    inserir_ordenado(&lista1, 7);
+
+    // Insere elementos ordenados em lista2
+    inserir_ordenado(&lista2, 2);
+    inserir_ordenado(&lista2, 4);
+    inserir_ordenado(&lista2, 6);
+    inserir_ordenado(&lista2, 8);
+
+    printf("Lista 1: ");
+    imprimir_lista(lista1);
+
+    printf("Lista 2: ");
+    imprimir_lista(lista2);
+
+    No* lista_unida = unir_listas_ordenadas(lista1, lista2);
+
+    printf("Lista unida: ");
+    imprimir_lista(lista_unida);
+
+    liberar_lista(lista_unida);
+
+    return 0;
+}
