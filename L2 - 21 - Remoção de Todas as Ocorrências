@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Remove todas as ocorrências do valor na lista
+void remover_todas_ocorrencias(No** inicio, int valor) {
+    No* atual = *inicio;
+    No* anterior = NULL;
+
+    while (atual != NULL) {
+        if (atual->dado == valor) {
+            No* temp = atual;
+            if (anterior == NULL) {
+                // Remover no início
+                *inicio = atual->prox;
+                atual = *inicio;
+            } else {
+                anterior->prox = atual->prox;
+                atual = anterior->prox;
+            }
+            free(temp);
+        } else {
+            anterior = atual;
+            atual = atual->prox;
+        }
+    }
+}
+
+// Função auxiliar para inserir no fim da lista (para teste)
+void inserir_fim(No** inicio, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = NULL;
+
+    if (*inicio == NULL) {
+        *inicio = novo;
+    } else {
+        No* temp = *inicio;
+        while (temp->prox != NULL) {
+            temp = temp->prox;
+        }
+        temp->prox = novo;
+    }
+}
+
+// Imprime a lista
+void imprimir_lista(No* inicio) {
+    No* temp = inicio;
+    while (temp != NULL) {
+        printf("%d ", temp->dado);
+        temp = temp->prox;
+    }
+    printf("\n");
+}
+
+// Libera memória da lista
+void liberar_lista(No* inicio) {
+    No* temp;
+    while (inicio != NULL) {
+        temp = inicio;
+        inicio = inicio->prox;
+        free(temp);
+    }
+}
+
+int main() {
+    No* lista = NULL;
+
+    // Insere alguns valores, incluindo repetidos
+    inserir_fim(&lista, 5);
+    inserir_fim(&lista, 3);
+    inserir_fim(&lista, 5);
+    inserir_fim(&lista, 7);
+    inserir_fim(&lista, 5);
+    inserir_fim(&lista, 9);
+
+    printf("Lista original:\n");
+    imprimir_lista(lista);
+
+    int valor_remover = 5;
+    remover_todas_ocorrencias(&lista, valor_remover);
+
+    printf("Lista após remover todas ocorrências de %d:\n", valor_remover);
+    imprimir_lista(lista);
+
+    liberar_lista(lista);
+    return 0;
+}
