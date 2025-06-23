@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+typedef struct {
+    No* topo;
+} Pilha;
+
+void inicializar(Pilha* p) {
+    p->topo = NULL;
+}
+
+int esta_vazia(Pilha* p) {
+    return p->topo == NULL;
+}
+
+int empilhar(Pilha* p, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (!novo) return 0;
+    novo->dado = valor;
+    novo->prox = p->topo;
+    p->topo = novo;
+    return 1;
+}
+
+int desempilhar(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    No* temp = p->topo;
+    *valor = temp->dado;
+    p->topo = temp->prox;
+    free(temp);
+    return 1;
+}
+
+void liberar_pilha(Pilha* p) {
+    int v;
+    while (desempilhar(p, &v));
+}
+
+void imprimir_pilha(Pilha* p) {
+    No* atual = p->topo;
+    printf("Topo -> ");
+    while (atual) {
+        printf("%d ", atual->dado);
+        atual = atual->prox;
+    }
+    printf("\n");
+}
+
+// Função que ordena a pilha usando uma pilha auxiliar
+void ordenar_pilha(Pilha* p) {
+    Pilha aux;
+    inicializar(&aux);
+
+    int temp;
+    while (!esta_vazia(p)) {
+        desempilhar(p, &temp);
+
+        // Move da auxiliar para p enquanto o topo da auxiliar for maior que temp
+        int valor_topo;
+        while (!esta_vazia(&aux) && (aux.topo->dado > temp)) {
+            desempilhar(&aux, &valor_topo);
+            empilhar(p, valor_topo);
+        }
+
+        empilhar(&aux, temp);
+    }
+
+    // Transfere tudo de volta para p (ordenado)
+    while (!esta_vazia(&aux)) {
+        desempilhar(&aux, &temp);
+        empilhar(p, temp);
+    }
+
+    liberar_pilha(&aux);
+}
+
+int main() {
+    Pilha p;
+    inicializar(&p);
+
+    empilhar(&p, 34);
+    empilhar(&p, 3);
+    empilhar(&p, 31);
+    empilhar(&p, 98);
+    empilhar(&p, 92);
+    empilhar(&p, 23);
+
+    printf("Pilha original:\n");
+    imprimir_pilha(&p);
+
+    ordenar_pilha(&p);
+
+    printf("Pilha ordenada:\n");
+    imprimir_pilha(&p);
+
+    liberar_pilha(&p);
+
+    return 0;
+}
