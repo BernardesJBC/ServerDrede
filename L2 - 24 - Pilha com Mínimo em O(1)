@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TAMANHO 100
+
+typedef struct {
+    int dados[TAMANHO];
+    int topo;
+} Pilha;
+
+// Inicializa pilha
+void inicializar(Pilha* p) {
+    p->topo = -1;
+}
+
+int esta_vazia(Pilha* p) {
+    return p->topo == -1;
+}
+
+int esta_cheia(Pilha* p) {
+    return p->topo == TAMANHO - 1;
+}
+
+int push(Pilha* p, int valor) {
+    if (esta_cheia(p)) return 0;
+    p->dados[++(p->topo)] = valor;
+    return 1;
+}
+
+int pop(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    *valor = p->dados[(p->topo)--];
+    return 1;
+}
+
+int topo(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    *valor = p->dados[p->topo];
+    return 1;
+}
+
+// Pilha com mínimo em O(1)
+typedef struct {
+    Pilha pilha_dados;
+    Pilha pilha_minimos;
+} PilhaComMinimo;
+
+void inicializar_pilha_min(PilhaComMinimo* p) {
+    inicializar(&p->pilha_dados);
+    inicializar(&p->pilha_minimos);
+}
+
+int push_min(PilhaComMinimo* p, int valor) {
+    if (!push(&p->pilha_dados, valor)) return 0;
+
+    int min_atual;
+    if (esta_vazia(&p->pilha_minimos) || valor <= p->pilha_minimos.dados[p->pilha_minimos.topo]) {
+        push(&p->pilha_minimos, valor);
+    }
+    return 1;
+}
+
+int pop_min(PilhaComMinimo* p, int* valor) {
+    if (!pop(&p->pilha_dados, valor)) return 0;
+
+    int topo_min;
+    topo(&p->pilha_minimos, &topo_min);
+    if (*valor == topo_min) {
+        int descartado;
+        pop(&p->pilha_minimos, &descartado);
+    }
+    return 1;
+}
+
+int obter_minimo(PilhaComMinimo* p, int* valor) {
+    return topo(&p->pilha_minimos, valor);
+}
+
+int topo_min(PilhaComMinimo* p, int* valor) {
+    return topo(&p->pilha_dados, valor);
+}
+
+// Exemplo de uso
+int main() {
+    PilhaComMinimo p;
+    inicializar_pilha_min(&p);
+
+    push_min(&p, 5);
+    push_min(&p, 3);
+    push_min(&p, 7);
+    push_min(&p, 2);
+
+    int min;
+    obter_minimo(&p, &min);
+    printf("Mínimo atual: %d\n", min); // Deve imprimir 2
+
+    int valor;
+    pop_min(&p, &valor); // Remove 2
+
+    obter_minimo(&p, &min);
+    printf("Mínimo após pop: %d\n", min); // Deve imprimir 3
+
+    return 0;
+}
