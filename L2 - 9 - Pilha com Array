@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TAMANHO_MAX 100
+
+// Estrutura da pilha
+typedef struct {
+    int dados[TAMANHO_MAX];
+    int topo;
+} Pilha;
+
+// Inicializa a pilha
+void inicializar(Pilha* p) {
+    p->topo = -1;
+}
+
+// Verifica se a pilha está vazia
+int esta_vazia(Pilha* p) {
+    return p->topo == -1;
+}
+
+// Verifica se a pilha está cheia
+int esta_cheia(Pilha* p) {
+    return p->topo == TAMANHO_MAX - 1;
+}
+
+// Empilha um elemento
+int empilhar(Pilha* p, int valor) {
+    if (esta_cheia(p)) return 0;
+    p->dados[++(p->topo)] = valor;
+    return 1;
+}
+
+// Desempilha um elemento
+int desempilhar(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    *valor = p->dados[(p->topo)--];
+    return 1;
+}
+
+// Consulta o topo da pilha sem remover
+int topo(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    *valor = p->dados[p->topo];
+    return 1;
+}
+
+int main() {
+    Pilha p;
+    inicializar(&p);
+
+    empilhar(&p, 10);
+    empilhar(&p, 20);
+    empilhar(&p, 30);
+
+    int valor;
+    printf("Desempilhando:\n");
+    while (desempilhar(&p, &valor)) {
+        printf("%d\n", valor);
+    }
+
+    return 0;
+}
