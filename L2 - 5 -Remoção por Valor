@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+void inserir_inicio(No** lista, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = *lista;
+    *lista = novo;
+}
+
+void imprimir_lista(No* lista) {
+    while (lista != NULL) {
+        printf("%d -> ", lista->dado);
+        lista = lista->prox;
+    }
+    printf("NULL\n");
+}
+
+int remover_valor(No** lista, int valor) {
+    if (*lista == NULL) return 0;
+
+    No* atual = *lista;
+    No* anterior = NULL;
+
+    if (atual->dado == valor) {
+        *lista = atual->prox;
+        free(atual);
+        return 1;
+    }
+
+    while (atual != NULL && atual->dado != valor) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if (atual == NULL) return 0;
+
+    anterior->prox = atual->prox;
+    free(atual);
+    return 1;
+}
+
+int main() {
+    No* lista = NULL;
+
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    inserir_inicio(&lista, 40);  // lista: 40 -> 30 -> 20 -> 10
+
+    printf("Lista antes da remoção:\n");
+    imprimir_lista(lista);
+
+    int removido = remover_valor(&lista, 30);
+    printf("\nRemoção do valor 30: %s\n", removido ? "Sucesso" : "Valor não encontrado");
+
+    printf("Lista depois da remoção:\n");
+    imprimir_lista(lista);
+
+    return 0;
+}
