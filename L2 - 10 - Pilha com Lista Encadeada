@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Nó da pilha
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Pilha representada pelo ponteiro do topo
+typedef struct {
+    No* topo;
+} Pilha;
+
+// Inicializa a pilha
+void inicializar(Pilha* p) {
+    p->topo = NULL;
+}
+
+// Verifica se a pilha está vazia
+int esta_vazia(Pilha* p) {
+    return p->topo == NULL;
+}
+
+// Empilha um valor
+int empilhar(Pilha* p, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (!novo) return 0;
+
+    novo->dado = valor;
+    novo->prox = p->topo;
+    p->topo = novo;
+    return 1;
+}
+
+// Desempilha um valor
+int desempilhar(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+
+    No* temp = p->topo;
+    *valor = temp->dado;
+    p->topo = temp->prox;
+    free(temp);
+    return 1;
+}
+
+// Consulta o topo sem remover
+int topo(Pilha* p, int* valor) {
+    if (esta_vazia(p)) return 0;
+    *valor = p->topo->dado;
+    return 1;
+}
+
+// Libera toda a pilha
+void liberar_pilha(Pilha* p) {
+    int valor;
+    while (desempilhar(p, &valor));
+}
