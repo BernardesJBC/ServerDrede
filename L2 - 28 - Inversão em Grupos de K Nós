@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Insere no fim (para montar a lista)
+void inserir_fim(No** inicio, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = NULL;
+
+    if (*inicio == NULL) {
+        *inicio = novo;
+    } else {
+        No* temp = *inicio;
+        while (temp->prox != NULL)
+            temp = temp->prox;
+        temp->prox = novo;
+    }
+}
+
+// Inverte grupo de K nós e retorna o novo início
+No* inverter_grupos(No* cabeca, int k) {
+    if (cabeca == NULL || k <= 1) return cabeca;
+
+    No* atual = cabeca;
+    No* anterior = NULL;
+    No* prox = NULL;
+
+    // Verifica se há pelo menos k nós para inverter
+    No* temp = cabeca;
+    for (int i = 0; i < k; i++) {
+        if (temp == NULL) return cabeca; // grupo incompleto, não inverte
+        temp = temp->prox;
+    }
+
+    // Inverte os primeiros k nós
+    int count = 0;
+    while (atual != NULL && count < k) {
+        prox = atual->prox;
+        atual->prox = anterior;
+        anterior = atual;
+        atual = prox;
+        count++;
+    }
+
+    // Chamada recursiva para os próximos grupos
+    if (prox != NULL) {
+        cabeca->prox = inverter_grupos(prox, k);
+    }
+
+    return anterior; // novo início do grupo invertido
+}
+
+// Imprime a lista
+void imprimir_lista(No* inicio) {
+    while (inicio != NULL) {
+        printf("%d ", inicio->dado);
+        inicio = inicio->prox;
+    }
+    printf("\n");
+}
+
+// Libera a memória
+void liberar_lista(No* inicio) {
+    No* temp;
+    while (inicio != NULL) {
+        temp = inicio;
+        inicio = inicio->prox;
+        free(temp);
+    }
+}
+
+// Teste
+int main() {
+    No* lista = NULL;
+
+    for (int i = 1; i <= 5; i++) {
+        inserir_fim(&lista, i);
+    }
+
+    printf("Lista original:\n");
+    imprimir_lista(lista);
+
+    int k = 2;
+    lista = inverter_grupos(lista, k);
+
+    printf("Lista após inverter grupos de %d:\n", k);
+    imprimir_lista(lista);
+
+    liberar_lista(lista);
+    return 0;
+}
