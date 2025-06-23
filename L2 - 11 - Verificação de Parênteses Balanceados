@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    char dado;
+    struct No* prox;
+} No;
+
+typedef struct {
+    No* topo;
+} Pilha;
+
+void inicializar(Pilha* p) {
+    p->topo = NULL;
+}
+
+int esta_vazia(Pilha* p) {
+    return p->topo == NULL;
+}
+
+int empilhar(Pilha* p, char valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (!novo) return 0;
+    novo->dado = valor;
+    novo->prox = p->topo;
+    p->topo = novo;
+    return 1;
+}
+
+int desempilhar(Pilha* p, char* valor) {
+    if (esta_vazia(p)) return 0;
+    No* temp = p->topo;
+    *valor = temp->dado;
+    p->topo = temp->prox;
+    free(temp);
+    return 1;
+}
+
+void liberar_pilha(Pilha* p) {
+    char x;
+    while (desempilhar(p, &x));
+}
+
+// Função que verifica o balanceamento
+int verificar_balanceamento(const char* expressao) {
+    Pilha p;
+    inicializar(&p);
+    char topo;
+
+    for (int i = 0; expressao[i] != '\0'; i++) {
+        char c = expressao[i];
+        if (c == '(' || c == '[' || c == '{') {
+            empilhar(&p, c);
+        } else if (c == ')' || c == ']' || c == '}') {
+            if (!desempilhar(&p, &topo)) {
+                return 0; // Fechamento sem abertura
+            }
+            if ((c == ')' && topo != '(') ||
+                (c == ']' && topo != '[') ||
+                (c == '}' && topo != '{')) {
+                return 0; // Ordem incorreta
+            }
+        }
+    }
+
+    int resultado = esta_vazia(&p);
+    liberar_pilha(&p);
+    return resultado;
+}
+
+int main() {
+    const char* teste1 = "({[]})";
+    const char* teste2 = "([)]";
+    const char* teste3 = "(((())))";
+    const char* teste4 = "((())";
+
+    printf("Expressao 1: %s -> %s\n", teste1, verificar_balanceamento(teste1) ? "Válida" : "Inválida");
+    printf("Expressao 2: %s -> %s\n", teste2, verificar_balanceamento(teste2) ? "Válida" : "Inválida");
+    printf("Expressao 3: %s -> %s\n", teste3, verificar_balanceamento(teste3) ? "Válida" : "Inválida");
+    printf("Expressao 4: %s -> %s\n", teste4, verificar_balanceamento(teste4) ? "Válida" : "Inválida");
+
+    return 0;
+}
