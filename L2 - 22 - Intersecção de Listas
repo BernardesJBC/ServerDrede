@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Conta o tamanho de uma lista
+int tamanho_lista(No* cabeca) {
+    int cont = 0;
+    while (cabeca != NULL) {
+        cont++;
+        cabeca = cabeca->prox;
+    }
+    return cont;
+}
+
+// Encontra o nó de interseção entre duas listas, se existir
+No* encontrar_intersecao(No* l1, No* l2) {
+    int tam1 = tamanho_lista(l1);
+    int tam2 = tamanho_lista(l2);
+
+    // Avança a lista maior para alinhar
+    int diff = abs(tam1 - tam2);
+    if (tam1 > tam2) {
+        for (int i = 0; i < diff; i++)
+            l1 = l1->prox;
+    } else {
+        for (int i = 0; i < diff; i++)
+            l2 = l2->prox;
+    }
+
+    // Caminha juntas até encontrar interseção (ou NULL)
+    while (l1 != NULL && l2 != NULL) {
+        if (l1 == l2) return l1; // ponteiros coincidem
+        l1 = l1->prox;
+        l2 = l2->prox;
+    }
+
+    return NULL; // sem interseção
+}
+
+// Função auxiliar para criar um novo nó
+No* novo_no(int valor) {
+    No* n = (No*)malloc(sizeof(No));
+    n->dado = valor;
+    n->prox = NULL;
+    return n;
+}
+
+// Exemplo de uso
+int main() {
+    // Lista A: 1 -> 2 -> 3 \
+    //                        -> 7 -> 8
+    // Lista B:       4 -> 5 /
+
+    No* comum = novo_no(7);
+    comum->prox = novo_no(8);
+
+    No* a = novo_no(1);
+    a->prox = novo_no(2);
+    a->prox->prox = novo_no(3);
+    a->prox->prox->prox = comum;
+
+    No* b = novo_no(4);
+    b->prox = novo_no(5);
+    b->prox->prox = comum;
+
+    No* intersecao = encontrar_intersecao(a, b);
+    if (intersecao) {
+        printf("Interseção encontrada no nó com valor: %d\n", intersecao->dado);
+    } else {
+        printf("Sem interseção.\n");
+    }
+
+    // Liberação simplificada (não ideal para listas compartilhadas)
+    free(a->prox->prox); // 3
+    free(a->prox);       // 2
+    free(a);             // 1
+    free(b->prox);       // 5
+    free(b);             // 4
+    free(comum->prox);   // 8
+    free(comum);         // 7
+
+    return 0;
+}
