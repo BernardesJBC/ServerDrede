@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Estrutura do nó
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Insere um elemento no início da lista
+void inserir_inicio(No** lista, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = *lista;
+    *lista = novo;
+}
+
+// Conta quantos nós existem na lista
+int contar_nos(No* lista) {
+    int contador = 0;
+    while (lista != NULL) {
+        contador++;
+        lista = lista->prox;
+    }
+    return contador;
+}
+
+// Busca um valor na lista
+int buscar_elemento(No* lista, int valor) {
+    while (lista != NULL) {
+        if (lista->dado == valor) {
+            return 1;
+        }
+        lista = lista->prox;
+    }
+    return 0;
+}
+
+int main() {
+    No* lista = NULL;
+
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+
+    printf("Número de nós: %d\n", contar_nos(lista));
+
+    int valor = 20;
+    if (buscar_elemento(lista, valor)) {
+        printf("O valor %d está na lista.\n", valor);
+    } else {
+        printf("O valor %d NÃO está na lista.\n", valor);
+    }
+
+    return 0;
+}
