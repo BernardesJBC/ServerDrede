@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define TAM 100
+
+typedef struct {
+    int dados[TAM];
+    int topo;
+} Pilha;
+
+// Inicializa a pilha
+void inicializar(Pilha* p) {
+    p->topo = -1;
+}
+
+// Empilha um valor
+int push(Pilha* p, int valor) {
+    if (p->topo == TAM - 1) return 0;
+    p->dados[++(p->topo)] = valor;
+    return 1;
+}
+
+// Desempilha um valor
+int pop(Pilha* p, int* valor) {
+    if (p->topo == -1) return 0;
+    *valor = p->dados[(p->topo)--];
+    return 1;
+}
+
+// Avalia uma expressão pós-fixa (RPN)
+int avaliar_posfixa(const char* expressao) {
+    Pilha p;
+    inicializar(&p);
+
+    char expr[TAM];
+    strncpy(expr, expressao, TAM);
+    expr[TAM - 1] = '\0';
+
+    char* token = strtok(expr, " ");
+    while (token != NULL) {
+        if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
+            push(&p, atoi(token));
+        } else {
+            int b, a;
+            if (!pop(&p, &b) || !pop(&p, &a)) {
+                printf("Erro: expressão inválida.\n");
+                exit(1);
+            }
+
+            int resultado;
+            switch (token[0]) {
+                case '+': resultado = a + b; break;
+                case '-': resultado = a - b; break;
+                case '*': resultado = a * b; break;
+                case '/':
+                    if (b == 0) {
+                        printf("Erro: divisão por zero.\n");
+                        exit(1);
+                    }
+                    resultado = a / b; break;
+                default:
+                    printf("Erro: operador desconhecido '%s'.\n", token);
+                    exit(1);
+            }
+            push(&p, resultado);
+        }
+        token = strtok(NULL, " ");
+    }
+
+    int final;
+    if (!pop(&p, &final) || p.topo != -1) {
+        printf("Erro: expressão malformada.\n");
+        exit(1);
+    }
+    return final;
+}
+
+// Teste
+int main() {
+    const char* expressao = "3 4 + 2 *"; // (3 + 4) * 2 = 14
+    int resultado = avaliar_posfixa(expressao);
+    printf("Resultado: %d\n", resultado);
+    return 0;
+}
