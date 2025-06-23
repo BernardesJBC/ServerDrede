@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TAMANHO 100
+
+typedef struct {
+    int fila[TAMANHO];
+    int inicio;
+    int fim;
+    int tamanho;
+} Fila;
+
+typedef struct {
+    int pilha[TAMANHO];
+    int topo;
+} Pilha;
+
+// Funções para fila
+void inicializar_fila(Fila* f) {
+    f->inicio = 0;
+    f->fim = 0;
+    f->tamanho = 0;
+}
+
+int esta_vazia_fila(Fila* f) {
+    return f->tamanho == 0;
+}
+
+int esta_cheia_fila(Fila* f) {
+    return f->tamanho == TAMANHO;
+}
+
+int enfileirar(Fila* f, int valor) {
+    if (esta_cheia_fila(f)) return 0;
+    f->fila[f->fim] = valor;
+    f->fim = (f->fim + 1) % TAMANHO;
+    f->tamanho++;
+    return 1;
+}
+
+int desenfileirar(Fila* f, int* valor) {
+    if (esta_vazia_fila(f)) return 0;
+    *valor = f->fila[f->inicio];
+    f->inicio = (f->inicio + 1) % TAMANHO;
+    f->tamanho--;
+    return 1;
+}
+
+// Funções para pilha
+void inicializar_pilha(Pilha* p) {
+    p->topo = -1;
+}
+
+int esta_vazia_pilha(Pilha* p) {
+    return p->topo == -1;
+}
+
+int esta_cheia_pilha(Pilha* p) {
+    return p->topo == TAMANHO - 1;
+}
+
+int empilhar(Pilha* p, int valor) {
+    if (esta_cheia_pilha(p)) return 0;
+    p->pilha[++(p->topo)] = valor;
+    return 1;
+}
+
+int desempilhar(Pilha* p, int* valor) {
+    if (esta_vazia_pilha(p)) return 0;
+    *valor = p->pilha[(p->topo)--];
+    return 1;
+}
+
+// Função que inverte os primeiros k elementos da fila usando pilha
+int inverter_primeiros_k(Fila* f, int k) {
+    if (k > f->tamanho || k < 0) return 0; // inválido
+
+    Pilha p;
+    inicializar_pilha(&p);
+
+    int valor;
+    // 1) Desenfileira os primeiros k e empilha para inverter
+    for (int i = 0; i < k; i++) {
+        desenfileirar(f, &valor);
+        empilhar(&p, valor);
+    }
+
+    // 2) Desempilha da pilha e enfileira de volta (inversão)
+    while (!esta_vazia_pilha(&p)) {
+        desempilhar(&p, &valor);
+        enfileirar(f, valor);
+    }
+
+    // 3) Move os elementos restantes (tamanho-k) para o final da fila para manter ordem
+    int tamanho_restante = f->tamanho - k;
+    for (int i = 0; i < tamanho_restante; i++) {
+        desenfileirar(f, &valor);
+        enfileirar(f, valor);
+    }
+
+    return 1;
+}
+
+// Função para imprimir fila
+void imprimir_fila(Fila* f) {
+    printf("Fila: ");
+    for (int i = 0, idx = f->inicio; i < f->tamanho; i++, idx = (idx + 1) % TAMANHO) {
+        printf("%d ", f->fila[idx]);
+    }
+    printf("\n");
+}
+
+// Exemplo de uso
+int main() {
+    Fila f;
+    inicializar_fila(&f);
+
+    // Enfileira alguns elementos
+    for (int i = 1; i <= 7; i++) {
+        enfileirar(&f, i);
+    }
+
+    printf("Original: ");
+    imprimir_fila(&f);
+
+    int k = 4;
+    inverter_primeiros_k(&f, k);
+
+    printf("Após inverter os primeiros %d elementos: ", k);
+    imprimir_fila(&f);
+
+    return 0;
+}
