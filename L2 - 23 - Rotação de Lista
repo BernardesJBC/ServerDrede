@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+// Conta o tamanho da lista
+int tamanho_lista(No* inicio) {
+    int cont = 0;
+    while (inicio != NULL) {
+        cont++;
+        inicio = inicio->prox;
+    }
+    return cont;
+}
+
+// Rotaciona a lista em K posições
+void rotacionar_lista(No** inicio, int k) {
+    if (*inicio == NULL || k == 0)
+        return;
+
+    int tamanho = tamanho_lista(*inicio);
+    k = k % tamanho;
+    if (k == 0)
+        return;
+
+    // Avança até o (tamanho - k)-ésimo nó
+    No* atual = *inicio;
+    for (int i = 1; i < tamanho - k; i++) {
+        atual = atual->prox;
+    }
+
+    // atual é o novo fim
+    No* novo_inicio = atual->prox;
+    atual->prox = NULL;
+
+    // Vai até o final da nova parte e conecta ao início antigo
+    No* temp = novo_inicio;
+    while (temp->prox != NULL) {
+        temp = temp->prox;
+    }
+    temp->prox = *inicio;
+
+    *inicio = novo_inicio;
+}
+
+// Funções auxiliares
+void inserir_fim(No** inicio, int valor) {
+    No* novo = (No*)malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = NULL;
+
+    if (*inicio == NULL) {
+        *inicio = novo;
+    } else {
+        No* temp = *inicio;
+        while (temp->prox != NULL)
+            temp = temp->prox;
+        temp->prox = novo;
+    }
+}
+
+void imprimir_lista(No* inicio) {
+    No* temp = inicio;
+    while (temp != NULL) {
+        printf("%d ", temp->dado);
+        temp = temp->prox;
+    }
+    printf("\n");
+}
+
+void liberar_lista(No* inicio) {
+    No* temp;
+    while (inicio != NULL) {
+        temp = inicio;
+        inicio = inicio->prox;
+        free(temp);
+    }
+}
+
+// Teste
+int main() {
+    No* lista = NULL;
+
+    inserir_fim(&lista, 1);
+    inserir_fim(&lista, 2);
+    inserir_fim(&lista, 3);
+    inserir_fim(&lista, 4);
+    inserir_fim(&lista, 5);
+
+    printf("Lista original:\n");
+    imprimir_lista(lista);
+
+    int k = 2;
+    rotacionar_lista(&lista, k);
+
+    printf("Lista rotacionada %d posições:\n", k);
+    imprimir_lista(lista);
+
+    liberar_lista(lista);
+    return 0;
+}
